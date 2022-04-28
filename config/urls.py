@@ -24,12 +24,12 @@ schema_view = get_schema_view(
         title="HeliumX API",
         default_version='v1',
         description="Test description",
-        terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@snippets.local"),
-        license=openapi.License(name="BSD License"),
+        terms_of_service="https://www.heliumX.com/policies/terms/",
+        contact=openapi.Contact(email="contact@heliumX.local"),
+        license=openapi.License(name="Test License"),
     ),
     public=True,
-    permission_classes=[permissions.AllowAny],
+    permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [
