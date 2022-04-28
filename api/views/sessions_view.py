@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect
 
 
 class CreateSessionView(generics.GenericAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes = [IsITsupport]
     serializer_class = CreateSessionSerializer
 
     def post(self, request):
@@ -46,7 +46,7 @@ class CreateSessionView(generics.GenericAPIView):
 
 
 class GenerateMeetingLink(generics.GenericAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes = [IsITsupport]
     serializer_class = CreateSessionSerializer
 
     def get(self, request):
@@ -54,7 +54,7 @@ class GenerateMeetingLink(generics.GenericAPIView):
 
 
 class ConfirmSession(generics.GenericAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes = [IsITsupport]
     serializer_class = GetSessionSerializer
 
     def put(self, request, pk):
