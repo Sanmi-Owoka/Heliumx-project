@@ -221,5 +221,3 @@ class GetAllUsers(generics.GenericAPIView):
             'data': serializer.data,
             'errors': 'null'
         }, status=status.HTTP_200_OK)
-
-

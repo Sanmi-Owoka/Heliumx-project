@@ -27,4 +27,7 @@ class Session(models.Model):
     meeting_link = models.CharField(max_length=255)
     schedule_date = models.DateField()
     schedule_time = models.TimeField()
-    completed = models.BooleanField(default=False)
+    confirm = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
