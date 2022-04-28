@@ -6,7 +6,7 @@ from .views.sessions_view import CreateSessionView, GenerateMeetingLink, Confirm
 urlpatterns = [
     path("newsletter/create", NewletterView.as_view(), name='create newsletter'),
     path("newsletter/get", GetNewLetterView.as_view(), name='get newsletter'),
-    path("newsletter/update", UpdateNewletterView.as_view(), name='update newsletter'),
+    path("newsletter/update/<int:pk>", UpdateNewletterView.as_view(), name='update newsletter'),
     path("subscription/create", CreateSubscriptionView.as_view(), name='create subscription'),
     path("subscription/get", GetSubscriptionView.as_view(), name='get subscription'),
     path("subscription/update/<int:pk>", UpdateSubscriptionView.as_view(), name='update subscription'),
