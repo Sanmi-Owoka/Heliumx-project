@@ -18,3 +18,9 @@ class GetSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Session
         fields = '__all__'
+
+
+class UpdateSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Session
+        fields = ['doctor_email', 'patient_email', 'meeting_link', 'schedule_date', 'schedule_time']

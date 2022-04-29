@@ -2,7 +2,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from ..models import Session
 from authentication.permissions import IsITsupport
-from ..serializers.sessions_serializer import CreateSessionSerializer, GetSessionSerializer
+from ..serializers.sessions_serializer import CreateSessionSerializer, GetSessionSerializer, UpdateSessionSerializer
 from django.core.exceptions import ObjectDoesNotExist
 from authentication.models import User
 from rest_framework.permissions import AllowAny
@@ -102,3 +102,33 @@ class DeleteSessionView(generics.GenericAPIView):
             'data': 'null',
             'errors': 'null'
         }, status=status.HTTP_204_NO_CONTENT)
+
+
+class UpdateSessionView(generics.GenericAPIView):
+    permission_classes = [IsITsupport]
+    serializer_class = UpdateSessionSerializer
+
+    def patch(self, request, pk):
+        try:
+            session = Session.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(
+                {
+                    "message": "failure",
+                    "data": "null",
+                    "error": "user with does not exist",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = self.serializer_class(session, data=request.data, partial=True)
+        if not serializer.is_valid():
+            return Response(
+                {"message": "failure", "data": "null", "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer.save()
+        return Response({
+            'message': 'success',
+            'data': serializer.data,
+            'errors': 'null'
+        }, status=status.HTTP_200_OK)

@@ -2,7 +2,8 @@ from django.urls import path
 from .views.newletter_view import NewletterView, GetNewLetterView, UpdateNewletterView, DeleteNewsletter
 from .views.subscription_view import CreateSubscriptionView, GetSubscriptionView, UpdateSubscriptionView, \
     DeleteSubscriptionView
-from .views.sessions_view import CreateSessionView, GenerateMeetingLink, ConfirmSession, DeleteSessionView
+from .views.sessions_view import CreateSessionView, GenerateMeetingLink, ConfirmSession, DeleteSessionView, \
+    UpdateSessionView
 
 urlpatterns = [
     path("newsletter/create", NewletterView.as_view(), name='create newsletter'),
@@ -17,4 +18,5 @@ urlpatterns = [
     path("session/generateMeeetingLink", GenerateMeetingLink.as_view(), name='generate link'),
     path("session/confirm/<int:pk>", ConfirmSession.as_view(), name='confirm session'),
     path("session/delete/<int:pk>", DeleteSessionView.as_view(), name="delete session"),
+    path("session/update/<int:pk>", UpdateSessionView.as_view(), name="update session")
 ]
