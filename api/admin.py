@@ -5,12 +5,12 @@ from .models import Newletter, Session, Subscription
 class NewletterAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'title')
     list_display_links = ('id', 'user')
-    search_fields = ('user',)
 
 
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('id', 'type')
     list_display_links = ('id', 'type')
+    search_fields = ('type',)
 
 
 class SessionAdmin(admin.ModelAdmin):
