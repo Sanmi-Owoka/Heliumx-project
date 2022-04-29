@@ -23,7 +23,7 @@ class CreateSubscriptionView(generics.GenericAPIView):
         )
         subcription.save()
         return Response({
-            'message': 'subcription successfully created',
+            'message': 'subscription successfully created',
             'data': serializer.data,
             'errors': "null"
         }, status=status.HTTP_201_CREATED)
