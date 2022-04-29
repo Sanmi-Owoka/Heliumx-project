@@ -75,6 +75,11 @@ class UpdateNewletterView(generics.GenericAPIView):
             'errors': 'null'
         }, status=status.HTTP_200_OK)
 
+
+class DeleteNewsletter(generics.GenericAPIView):
+    permission_classes = [IsCommunityManager]
+    serializer_class = CreateNewletter
+
     def delete(self, request, pk):
         try:
             newsletter = Newletter.objects.get(pk=pk)

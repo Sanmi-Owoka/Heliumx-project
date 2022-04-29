@@ -72,6 +72,11 @@ class UpdateSubscriptionView(generics.GenericAPIView):
             'errors': 'null'
         }, status=status.HTTP_200_OK)
 
+
+class DeleteSubscriptionView(generics.GenericAPIView):
+    permission_classes = [IsAccountant]
+    serializer_class = GetSubscription
+
     def delete(self, request, pk):
         try:
             subscription = Subscription.objects.get(pk=pk)

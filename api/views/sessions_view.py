@@ -78,6 +78,11 @@ class ConfirmSession(generics.GenericAPIView):
             'error': "null"
         }, status=status.HTTP_200_OK)
 
+
+class DeleteSessionView(generics.GenericAPIView):
+    permission_classes = [IsITsupport]
+    serializer_class = CreateSessionSerializer
+
     def delete(self, request, pk):
         try:
             session = Session.objects.get(pk=pk)
