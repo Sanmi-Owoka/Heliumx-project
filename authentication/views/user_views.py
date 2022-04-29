@@ -31,6 +31,9 @@ class UserView(generics.GenericAPIView):
         password = Util.generate_password(10)
         user.set_password(password)
         user.save()
+        email_body = 'Hi ' + user.firstname + ' here is your heliumx password: ' + password
+        data = {'email_body': email_body, 'to_email': user.email, 'email_subject': 'Heliumx password'}
+        Util.send_email(data)
         return Response({
             'message': 'success',
             'data': serializer.data,
@@ -278,6 +281,9 @@ class CreateDoctorView(generics.GenericAPIView):
         password = Util.generate_password(10)
         user.set_password(password)
         user.save()
+        email_body = 'Hi ' + user.firstname + ' here is your heliumx password: ' + password
+        data = {'email_body': email_body, 'to_email': user.email, 'email_subject': 'Heliumx password'}
+        Util.send_email(data)
         return Response({
             'message': 'success',
             'data': serializer.data,

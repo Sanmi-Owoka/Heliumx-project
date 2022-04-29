@@ -5,6 +5,7 @@ from authentication.permissions import IsCommunityManager
 from ..serializers.newletter_serializer import CreateNewletter, GetNewletter, UpdateNewletter
 from authentication.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.permissions import AllowAny
 
 
 class NewletterView(generics.GenericAPIView):
@@ -35,6 +36,7 @@ class NewletterView(generics.GenericAPIView):
 class GetNewLetterView(generics.GenericAPIView):
     permission_classes = [IsCommunityManager]
     serializer_class = GetNewletter
+    queryset = Newletter.objects.all()
 
     def get(self, request):
         newletter = Newletter.objects.all()

@@ -5,8 +5,8 @@ from authentication.permissions import IsITsupport
 from ..serializers.sessions_serializer import CreateSessionSerializer, GetSessionSerializer, UpdateSessionSerializer
 from django.core.exceptions import ObjectDoesNotExist
 from authentication.models import User
-from rest_framework.permissions import AllowAny
 from django.http import HttpResponseRedirect
+from authentication.utils import Util
 
 
 class CreateSessionView(generics.GenericAPIView):
@@ -14,8 +14,14 @@ class CreateSessionView(generics.GenericAPIView):
     serializer_class = CreateSessionSerializer
 
     def post(self, request):
-        doctor_email = request.data.get('doctor_email', '')
-        patient_email = request.data.get('patient_email', '')
+        serializer = self.serializer_class(data=request.data)
+        if not serializer.is_valid():
+            return Response(
+                {"message": "failure", "data": "null", "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        doctor_email = serializer.validated_data['doctor_email']
+        patient_email = serializer.validated_data['patient_email_email']
         doctor = User.objects.get(email=doctor_email)
         if not doctor.is_doctor:
             return Response({
@@ -31,13 +37,23 @@ class CreateSessionView(generics.GenericAPIView):
                 "error": "user is not a patient",
                 "data": "null"
             }, status=status.HTTP_400_BAD_REQUEST)
-        serializer = self.serializer_class(data=request.data)
-        if not serializer.is_valid():
-            return Response(
-                {"message": "failure", "data": "null", "errors": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+
         serializer.save()
+        email_body = 'Hello you have been booked for session with  doctor' + doctor.firstname + '\nmeeting link: ' + \
+                     serializer.validated_data['meeting_link'] + '\non ' \
+                     + serializer.validated_data['schedule_date'].strftime("%d %B, %Y") + \
+                     '\nby ' + serializer.validated_data['schedule_time'].strftime("%I%p")
+
+        data = {'email_body': email_body, 'to_email': patient.email, 'email_subject': 'Meeting session'}
+        Util.send_email(data)
+        email_content = 'Hello you have been booked for session with ' + patient.firstname + '\n meeting link: ' + \
+                        serializer.validated_data['meeting_link'] + '\non ' + serializer.validated_data[
+                            'schedule_date'].strftime("%d %B, %Y") + \
+                        '\nby ' + serializer.validated_data['schedule_time'].strftime("%I%p")
+
+        meet = {'email_body': email_content, 'to_email': doctor.email, 'email_subject': 'Meeting session'}
+        Util.send_email(meet)
+
         return Response({
             'message': 'session successfully created',
             'data': serializer.data,
@@ -106,9 +122,9 @@ class DeleteSessionView(generics.GenericAPIView):
 
 class UpdateSessionView(generics.GenericAPIView):
     permission_classes = [IsITsupport]
-    serializer_class = UpdateSessionSerializer
+    serializer_class = CreateSessionSerializer
 
-    def patch(self, request, pk):
+    def put(self, request, pk):
         try:
             session = Session.objects.get(pk=pk)
         except ObjectDoesNotExist:
@@ -119,16 +135,43 @@ class UpdateSessionView(generics.GenericAPIView):
                     "error": "user with does not exist",
                 },
                 status=status.HTTP_400_BAD_REQUEST,
-            )
-        serializer = self.serializer_class(session, data=request.data, partial=True)
+            );
+        serializer = self.serializer_class(data=request.data)
         if not serializer.is_valid():
             return Response(
                 {"message": "failure", "data": "null", "errors": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST,
-            )
+            );
+        doctor_email = serializer.validated_data['doctor_email']
+        patient_email = serializer.validated_data['patient_email_email']
+        try:
+            doctor = User.objects.get(email=doctor_email)
+        except ObjectDoesNotExist:
+            return Response({
+                "message": "failed",
+                "error": "user is not a doctor",
+                "data": "null"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            patient = User.objects.get(email=patient_email)
+        except ObjectDoesNotExist:
+            return Response({
+                "message": "failed",
+                "error": "user is not a patient",
+                "data": "null"
+            }, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
-        return Response({
-            'message': 'success',
-            'data': serializer.data,
-            'errors': 'null'
-        }, status=status.HTTP_200_OK)
+        email_body = 'Hello you have been booked for session with  doctor' + doctor.firstname + '\nmeeting link: ' + \
+                     serializer.validated_data['meeting_link'] + '\non ' \
+                     + serializer.validated_data['schedule_date'].strftime("%d %B, %Y") + \
+                     '\nby ' + serializer.validated_data['schedule_time'].strftime("%I%p")
+
+        data = {'email_body': email_body, 'to_email': patient.email, 'email_subject': 'Meeting session'}
+        Util.send_email(data)
+        email_content = 'Hello you have been booked for session with ' + patient.firstname + '\n meeting link: ' + \
+                        serializer.validated_data['meeting_link'] + '\non ' + serializer.validated_data[
+                            'schedule_date'].strftime("%d %B, %Y") + \
+                        '\nby ' + serializer.validated_data['schedule_time'].strftime("%I%p")
+
+        meet = {'email_body': email_content, 'to_email': doctor.email, 'email_subject': 'Meeting session'}
+        Util.send_email(meet)
