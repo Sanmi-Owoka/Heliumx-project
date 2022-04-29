@@ -77,3 +77,23 @@ class ConfirmSession(generics.GenericAPIView):
             'data': serializer.data,
             'error': "null"
         }, status=status.HTTP_200_OK)
+
+    def delete(self, request, pk):
+        try:
+            session = Session.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(
+                {
+                    "message": "failure",
+                    "data": "null",
+                    "error": "session with does not exist",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        session.delete()
+        return Response({
+            'message': 'session successfully deleted',
+            'data': 'null',
+            'errors': 'null'
+        }, status=status.HTTP_204_NO_CONTENT)

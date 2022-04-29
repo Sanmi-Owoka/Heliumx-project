@@ -71,3 +71,23 @@ class UpdateSubscriptionView(generics.GenericAPIView):
             'data': serializer.data,
             'errors': 'null'
         }, status=status.HTTP_200_OK)
+
+    def delete(self, request, pk):
+        try:
+            subscription = Subscription.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(
+                {
+                    "message": "failure",
+                    "data": "null",
+                    "error": "subscription with does not exist",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        subscription.delete()
+        return Response({
+            'message': 'subscription successfully deleted',
+            'data': 'null',
+            'errors': 'null'
+        }, status=status.HTTP_204_NO_CONTENT)

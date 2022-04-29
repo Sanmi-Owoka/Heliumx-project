@@ -74,3 +74,23 @@ class UpdateNewletterView(generics.GenericAPIView):
             'data': serializer.data,
             'errors': 'null'
         }, status=status.HTTP_200_OK)
+
+    def delete(self, request, pk):
+        try:
+            newsletter = Newletter.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(
+                {
+                    "message": "failure",
+                    "data": "null",
+                    "error": "newsletter with does not exist",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        newsletter.delete()
+        return Response({
+            'message': 'newsletter successfully deleted',
+            'data': 'null',
+            'errors': 'null'
+        }, status=status.HTTP_204_NO_CONTENT)
