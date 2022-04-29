@@ -87,6 +87,25 @@ class UserGetDeleteUpdateView(generics.GenericAPIView):
             'errors': 'null'
         }, status=status.HTTP_200_OK)
 
+    def get(self, request, pk):
+        try:
+            user = User.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(
+                {
+                    "message": "failure",
+                    "data": "null",
+                    "error": "user with does not exist",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        serializer = GetUserSerializer(user)
+        return Response({
+            'message': 'user successfully gotten',
+            'data': serializer.data,
+            'errors': 'null'
+        }, status=status.HTTP_200_OK)
+
 
 class AddAdminView(generics.GenericAPIView):
     serializer_class = AddAdminSerializer
@@ -211,6 +230,20 @@ class CommunityManagerView(generics.GenericAPIView):
 
 class GetAllUsers(generics.GenericAPIView):
     permission_classes = [IsCommunityManager]
+    serializer_class = GetUserSerializer
+
+    def get(self, request):
+        user = User.objects.all()
+        serializer = self.serializer_class(user, many=True)
+        return Response({
+            'message': 'users successfully gotten',
+            'data': serializer.data,
+            'errors': 'null'
+        }, status=status.HTTP_200_OK)
+
+
+class GetAllUsersView(generics.GenericAPIView):
+    permission_classes = [IsCEO]
     serializer_class = GetUserSerializer
 
     def get(self, request):
