@@ -36,7 +36,7 @@ class UserView(generics.GenericAPIView):
             'data': serializer.data,
             'password': password,
             'errors': 'null'
-        })
+        }, status=status.HTTP_201_CREATED)
 
 
 class UserGetDeleteUpdateView(generics.GenericAPIView):
@@ -254,3 +254,33 @@ class GetAllUsersView(generics.GenericAPIView):
             'data': serializer.data,
             'errors': 'null'
         }, status=status.HTTP_200_OK)
+
+
+class CreateDoctorView(generics.GenericAPIView):
+    permission_classes = [IsCEO]
+    serializer_class = AddUserSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if not serializer.is_valid():
+            return Response(
+                {"message": "failure", "data": "null", "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        user = User.objects.create(
+            firstname=serializer.validated_data['firstname'],
+            lastname=serializer.validated_data['lastname'],
+            email=serializer.validated_data['email'],
+            roles='user',
+            is_doctor=True,
+            is_patient=False,
+        )
+        password = Util.generate_password(10)
+        user.set_password(password)
+        user.save()
+        return Response({
+            'message': 'success',
+            'data': serializer.data,
+            'password': password,
+            'errors': 'null'
+        }, status=status.HTTP_201_CREATED)

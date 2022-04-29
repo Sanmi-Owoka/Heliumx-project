@@ -1,11 +1,12 @@
 from django.urls import path
 from .views.user_views import UserView, UserGetDeleteUpdateView, AddAdminView, AssignAdminRoleView, GetAllUsers, \
-    CommunityManagerView, GetAllUsersView
+    CommunityManagerView, GetAllUsersView, CreateDoctorView
 from .views.login_view import LoginView
 
 urlpatterns = [
     path("", UserView.as_view(), name='user view'),
     path("login/", LoginView.as_view(), name='login'),
+    path("doctor/create/", CreateDoctorView.as_view(), name="create doctor"),
     path("<int:pk>", UserGetDeleteUpdateView.as_view(), name='update, delete and get'),
     path("get/", GetAllUsersView.as_view(), name='get users'),
     path("admin/add/", AddAdminView.as_view(), name='add admin'),
